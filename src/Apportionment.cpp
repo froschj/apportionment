@@ -20,46 +20,52 @@ void Apportionment::apportion(unsigned seats) {
 
 void Apportionment::addSeat() {
   std::pop_heap(v.begin(), v.end(), StatePriority);
-  v.back()->addSeat();
+  std::get<0>(v.back())->addSeat();
+  std::get<1>(v.back()) = priority(std::get<0>(v.back()));
   ++seatsApportioned;
   std::push_heap(v.begin(), v.end(), StatePriority);
 }
 
-unsigned getSeatsApportioned() {
+unsigned Apportionment::getSeatsApportioned() {
   return seatsApportioned;
 }
 
-void addState(std::string stateName, unsigned long long statePop) {
-  v.emplace_back(std::make_unique<T>(stateName, statePop));
-  seatsApportioned += (v.back())->getSeats();
+void Apportionment::addState(State state) {
+  v.emplace_back(std::make_tuple<T>(state, this->priority(state)));
+  seatsApportioned += std::get<0>(v.back())->getSeats();
   std::push_heap(v.begin(), v.end(), StatePriority);
 }
 
-struct ApportionResult getStates() {
-  std::vector<struct ApportionResult> temp;
+struct Apportionment::ApportionResult getStates() {
+  std::vector<State> temp;
   for (auto it = v.cbegin(); it != v.cend(); ++it) {
-    temp.emplace_back(
-      (**it)->getName(),
-      (**it)->getSeats(),
-      (**it)->getPopulation()
-    );
+    temp.emplace_back(std::get<0>(*it));
   }
   return temp;
 }
 
-std::string topStateName() {
-  return (v.back())->getName();
+std::string Apportionment::topStateName() {
+  return std::get<0>(v.back())->getName();
 }
 
-unsigned topStateSeats() {
-  return (v.back())->getSeats();
+unsigned Apportionment::topStateSeats() {
+  return std::get<0>(v.back())->getSeats();
 }
 
-unsigned long long topStatePriority() {
-  return (v.back())->getPriority();
+double Apportionment::topStatePriority() {
+  return std::get<1>(v.back());
 }
 
-unsigned getNumStates() {
+unsigned Apportionment::getNumStates() {
   return v.size();
 }
-~Apportionment();
+
+Apportionment::~Apportionment() {}
+
+bool StatePriority::operator() (
+  const tuple<State, double> lhs, const tuple<State, double> rhs
+) const
+{
+  if (reverse) return (std::get<1>(lhs) > std::get<1>(rhs));
+  else return (std::get<1>(lhs) < std::get<1>(rhs));
+}

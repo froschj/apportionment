@@ -10,31 +10,32 @@
 class State {
 public:
   State();
-  State(std::string stateName, unsigned long long statePopulation);
+  State(const std::string stateName, const unsigned long statePopulation);
+  State(const State &rhs);
 
-  void setName(std::string stateName);
-  void setPopulation(unsigned long long statePopulation);
+  void setName(const std::string stateName);
+  void setPopulation(const unsigned long statePopulation);
   void addSeat();
 
   std::string getName();
-  unsigned long long getPopulation();
-  double getPriority();
+  unsigned long getPopulation();
   unsigned getSeats();
 
-  virtual ~State();
+  ~State();
 protected:
   std::string name;
-  unsigned long long population;
+  unsigned long population;
   unsigned seats;
-  double priority;
-  virtual void setPriority() = 0;
+
 };
 
-class StatePriority {
+class StateAlpha {
   bool reverse;
 public:
-  StatePriority(const bool& revparam=false);
-  bool operator() (const State *lhs, const State *rhs) const;
+  StateAlpha(const bool& revparam=false);
+  bool operator() (
+    const State &lhs, const State &rhs
+  ) const;
 };
 
 #endif

@@ -7,14 +7,7 @@
 #include <vector>
 #include <memory>
 #include <string>
-
-struct ApportionResult {
-  std::string stateName;
-  unsigned seats;
-  unsigned long long population;
-  ApportionResult(std::string n, unsigned s, unsigned long long p) :
-    stateName(std::move(n)), seats(s), population(p) {}
-};
+#include <tuple>
 
 class Apportionment {
 public:
@@ -22,18 +15,26 @@ public:
   void apportion(unsigned seats);
   void addSeat();
   unsigned getSeatsApportioned();
-  void addState(std::string stateName, unsigned long long statePop);
-  std::vector<struct ApportionResult> getStates();
-  std::string topStateName();
-  unsigned topStateSeats();
-  unsigned long long topStatePriority();
-  unsigned getNumStates();
-  ~Apportionment();
+  void addState(State);
+  std::vector<State> getStates() const;
+  std::string topStateName() const;
+  unsigned topStateSeats() const;
+  double topStatePriority() const;
+  unsigned getNumStates() const;
+  virtual ~Apportionment();
 private:
-  std::vector<std::unique_ptr<State>> states;
+  std::vector<tuple<State, double>> states;
   unsigned seatsApportioned;
+  virtual double priority(const State &state) = 0;
 };
 
-
+class StatePriority {
+  bool reverse;
+public:
+  StatePriority(const bool& revparam=false);
+  bool operator() (
+    const tuple<State, double> lhs, const tuple<State, double> rhs
+  ) const;
+};
 
 #endif

@@ -14,6 +14,12 @@ State::State(std::string stateName, unsigned long long statePopulation) {
   this->seats = 1;
 }
 
+State::State (const State &rhs) {
+  this->name = rhs.name;
+  this->population = rhs.population;
+  this->seats = rhs.seats;
+}
+
 State::~State() {}
 
 void State::setName(stateName) {
@@ -37,30 +43,16 @@ unsigned long long State::getPopulation() {
   return this->population;
 }
 
-double State::getPriority() {
-  return this->getPriority;
-}
-
 unsigned State::getSeats() {
   return this->seats;
-}
-
-StatePriority::StatePriority(const bool& revparam=false) {
-  reverse=revparam;
-}
-
-bool StatePriority::operator() (const State *lhs, const State *rhs) const
-{
-  if (reverse) return (lhs->getPriority() > rhs->getPriority());
-  else return (lhs->getPriority() < rhs->getPriority());
 }
 
 StateAlpha::StateAlpha(const bool& revparam=false) {
   reverse=revparam;
 }
 
-bool StateAlpha::operator() (const State *lhs, const State *rhs) const
+bool StateAlpha::operator() (const State &lhs, const State &rhs) const
 {
-  if (reverse) return (lhs->getPriority() > rhs->getPriority());
-  else return (lhs->getPriority() < rhs->getPriority());
+  if (reverse) return (lhs.getName().compare(rhs.getName()) < 0);
+  else return (rhs.getName().compare(lhs.getName()) < 0);
 }

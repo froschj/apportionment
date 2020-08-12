@@ -2,51 +2,47 @@
 #define METHODS_HPP
 
 #include "State.hpp"
+#include "Apportionment.hpp"
 #include <string>
 
-class Adams : public State {
+class Adams : public Apportionment {
 public:
   Adams();
-  Adams(std::string stateName, unsigned long long statePopulation);
   ~Adams();
 protected:
-  double setPriority() override;
+  double priority(State state) override;
 };
 
-class Dean : public State {
+class Dean : public Apportionment {
 public:
   Dean();
-  Dean(std::string stateName, unsigned long long statePopulation);
   ~Dean();
 protected:
-  double setPriority() override;
+  double priority(State state) override;
 };
 
-class HuntingtonHill : public State {
+class HuntingtonHill : public Apportionment {
 public:
   HuntingtonHill();
-  HuntingtonHill(std::string stateName, unsigned long long statePopulation);
   ~HuntingtonHill();
 protected:
-  double setPriority() override;
+  double priority(State state) override;
 };
 
-class Webster : public State {
+class Webster : public Apportionment {
 public:
   Webster();
-  Webster(std::string stateName, unsigned long long statePopulation);
   ~Webster();
 protected:
-  double setPriority() override;
+  double priority(State state) override;
 };
 
-class Jefferson : public State {
+class Jefferson : public Apportionment {
 public:
   Jefferson();
-  Jefferson(std::string stateName, unsigned long long statePopulation);
   ~Jefferson();
 protected:
-  double setPriority() override;
+  double priority(State state) override;
 };
 
 #endif
