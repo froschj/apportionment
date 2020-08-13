@@ -11,7 +11,7 @@ State::State() : State("", 0) {}
 
 //construct a state with a  name and a population.
 //all States start with 1 seat apportioned
-State::State(std::string stateName, unsigned long long statePopulation) {
+State::State(const std::string stateName, const unsigned long statePopulation) {
   this->setName(stateName);
   this->setPopulation(statePopulation);
   this->seats = 1;
@@ -25,7 +25,7 @@ State::State (const State &rhs) {
 }
 
 //assignment operator
-State operator= (const State &rhs) {
+State State::operator= (const State &rhs) {
   this->name = rhs.name;
   this->population = rhs.population;
   this->seats = rhs.seats;
@@ -35,33 +35,32 @@ State operator= (const State &rhs) {
 State::~State() {}
 
 //set the name of the state
-void State::setName(stateName) {
+void State::setName(const std::string stateName) {
   this->name = stateName;
 }
 
 //set the population of a State
-void State::setPopulation(statePopulation) {
+void State::setPopulation(const unsigned long statePopulation) {
   this->population = statePopulation;
 }
 
 //increment the number of seats apportioned to a State
 void State::addSeat() {
   ++(this->seats);
-  this->setPriority();
 }
 
 //return the name of the state
-std::string getName() {
+std::string State::getName() const {
   return this->name;
 }
 
 //return a states population
-unsigned long State::getPopulation() {
+unsigned long State::getPopulation() const {
   return this->population;
 }
 
 //return a states current number of seats
-unsigned State::getSeats() {
+unsigned State::getSeats() const {
   return this->seats;
 }
 

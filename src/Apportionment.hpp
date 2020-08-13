@@ -24,7 +24,7 @@ public:
   //return the number of seats apportioned
   unsigned getSeatsApportioned();
   //add a State to the apportionment
-  void addState(State);
+  void addState(State state);
   //return a vector of states representing the current state of the
   //Apportionment
   std::vector<State> getStates() const;
@@ -40,7 +40,7 @@ public:
   virtual ~Apportionment();
 private:
   //store each state with a corresponding priority value
-  std::vector<tuple<State, double>> states;
+  std::vector<std::tuple<State, double>> states;
   unsigned seatsApportioned;
   //override in derived classes to implement different apportiomment methods
   virtual double priority(const State &state) = 0;
@@ -52,7 +52,7 @@ class StatePriority {
 public:
   StatePriority(const bool& revparam=false);
   bool operator() (
-    const tuple<State, double> lhs, const tuple<State, double> rhs
+    const std::tuple<State, double> lhs, const std::tuple<State, double> rhs
   ) const;
 };
 
