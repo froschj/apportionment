@@ -63,17 +63,17 @@ std::vector<State> Apportionment::getStates() const {
 
 //return the name of the highest-priority state
 std::string Apportionment::topStateName() const {
-  return std::get<0>(states.back()).getName();
+  return std::get<0>(states.front()).getName();
 }
 
 //return the current seats of the highest priority state
 unsigned Apportionment::topStateSeats() const {
-  return std::get<0>(states.back()).getSeats();
+  return std::get<0>(states.front()).getSeats();
 }
 
 //return the current highest priority number
 double Apportionment::topStatePriority() const {
-  return std::get<1>(states.back());
+  return std::get<1>(states.front());
 }
 
 //return the number of states in the apportionment
@@ -85,6 +85,10 @@ unsigned Apportionment::getNumStates() const {
 Apportionment::~Apportionment() {}
 
 //comparison functor to implement priority queue behavior in our tuple vector
+StatePriority::StatePriority(const bool& revparam) {
+  reverse=revparam;
+}
+
 bool StatePriority::operator() (
   const std::tuple<State, double> lhs, const std::tuple<State, double> rhs
 ) const

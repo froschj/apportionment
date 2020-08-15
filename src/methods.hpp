@@ -17,54 +17,54 @@
 
 //Adams method: priority = population / curSeats
 //considered 1830, not used
-class Adams : public Apportionment {
+class AdamsMethod : public Apportionment {
 public:
-  Adams();
-  ~Adams();
+  AdamsMethod();
+  ~AdamsMethod();
 protected:
-  double priority(State state) override;
+  virtual double priority(const State &state) override;
 };
 
 //Dean method: priority = population / harmonicMean(curSeats, curSeats + 1)
 //considered 1830, not used
-class Dean : public Apportionment {
+class DeanMethod : public Apportionment {
 public:
-  Dean();
-  ~Dean();
+  DeanMethod();
+  ~DeanMethod();
 protected:
-  double priority(State state) override;
+  virtual double priority(const State &state) override;
 };
 
 //Huntington-Hill method:
 // priority = population / geometricMean(curSeats, curSeats + 1)
 //used 1940 - 2010
-class HuntingtonHill : public Apportionment {
+class HuntingtonHillMethod : public Apportionment {
 public:
-  HuntingtonHill();
-  ~HuntingtonHill();
+  HuntingtonHillMethod();
+  ~HuntingtonHillMethod();
 protected:
-  double priority(State state) override;
+  virtual double priority(const State &state) override;
 };
 
 //Webster method:
 //priority = population / arithmeticMean(curSeats, curSeats + 1)
 //used 1840, 1910, 1930
-class Webster : public Apportionment {
+class WebsterMethod : public Apportionment {
 public:
-  Webster();
-  ~Webster();
+  WebsterMethod();
+  ~WebsterMethod();
 protected:
-  double priority(State state) override;
+  virtual double priority(const State &state) override;
 };
 
 //Jefferson method: priority = population / (curSeats + 1)
 //used 1790-1830
-class Jefferson : public Apportionment {
+class JeffersonMethod : public Apportionment {
 public:
-  Jefferson();
-  ~Jefferson();
+  JeffersonMethod();
+  ~JeffersonMethod();
 protected:
-  double priority(State state) override;
+  virtual double priority(const State &state) override;
 };
 
 #endif

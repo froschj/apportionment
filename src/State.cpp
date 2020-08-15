@@ -25,10 +25,11 @@ State::State (const State &rhs) {
 }
 
 //assignment operator
-State State::operator= (const State &rhs) {
+State& State::operator= (const State &rhs) {
   this->name = rhs.name;
   this->population = rhs.population;
   this->seats = rhs.seats;
+  return *this;
 }
 
 //no destructor required
@@ -65,7 +66,7 @@ unsigned State::getSeats() const {
 }
 
 //compare functor for putting a container of States in Alpha order by name
-StateAlpha::StateAlpha(const bool& revparam=false) {
+StateAlpha::StateAlpha(const bool& revparam) {
   reverse=revparam;
 }
 

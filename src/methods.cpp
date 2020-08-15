@@ -4,21 +4,21 @@
 #include <string>
 #include <cmath>
 
-Adams::Adams() {}
-Adams::~Adams() {}
-double Adams::priority(const State &state) {
+AdamsMethod::AdamsMethod() {}
+AdamsMethod::~AdamsMethod() {}
+double AdamsMethod::priority(const State &state) {
   double p;
   unsigned a = state.getSeats();
   unsigned b = a + 1;
 
   //will always divide by 'a', fmin() used for consistency
-  p = state.getPopulation() / static_cast<double>fmin(a, b);
+  p = state.getPopulation() / static_cast<double>(fmin(a, b));
   return p;
 }
 
-Dean::Dean() {}
-Dean::~Dean() {}
-Dean::priority(const State &state) {
+DeanMethod::DeanMethod() {}
+DeanMethod::~DeanMethod() {}
+double DeanMethod::priority(const State &state) {
   double p;
   unsigned a = state.getSeats();
   unsigned b = a + 1;
@@ -32,9 +32,9 @@ Dean::priority(const State &state) {
   return p;
 }
 
-HuntingtonHill::HuntingtonHill() {}
-HuntingtonHill::~HuntingtonHill() {}
-HuntingtonHill::priority(const State &state) {
+HuntingtonHillMethod::HuntingtonHillMethod() {}
+HuntingtonHillMethod::~HuntingtonHillMethod() {}
+double HuntingtonHillMethod::priority(const State &state) {
   double p;
   unsigned a = state.getSeats();
   unsigned b = a + 1;
@@ -46,9 +46,9 @@ HuntingtonHill::priority(const State &state) {
   return p;
 }
 
-Webster::Webster() {}
-Webster::~Webster() {}
-Webster::priority(const State &state) {
+WebsterMethod::WebsterMethod() {}
+WebsterMethod::~WebsterMethod() {}
+double WebsterMethod::priority(const State &state) {
   double p;
   unsigned a = state.getSeats();
   unsigned b = a + 1;
@@ -57,17 +57,17 @@ Webster::priority(const State &state) {
   AM = (a + b) / 2.0; //arithmeticMean
 
   p = state.getPopulation() / AM;
-  return = p;
+  return p;
 }
 
-Jefferson::Jefferson() {}
-Jefferson::~Jefferson() {}
-Jefferson::priority(const State &state) {
+JeffersonMethod::JeffersonMethod() {}
+JeffersonMethod::~JeffersonMethod() {}
+double JeffersonMethod::priority(const State &state) {
   double p;
-  unsigned a = seats;
-  unsigned b = seats + 1;
+  unsigned a = state.getSeats();
+  unsigned b = a + 1;
 
   //will always divide by 'b', fmin() used for consistency
-  p = state.getPopulation() / static_cast<double>fmax(a, b);
+  p = state.getPopulation() / static_cast<double>(fmax(a, b));
   return p;
 }

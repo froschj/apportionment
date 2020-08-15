@@ -18,7 +18,7 @@ public:
   //copy constructor for a State
   State(const State &rhs);
   //assignment operator
-  State operator= (const State &rhs);
+  State& operator= (const State &rhs);
 
   void setName(const std::string stateName);
   //set the population of a State
