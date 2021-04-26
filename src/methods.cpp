@@ -1,106 +1,73 @@
 #include "State.hpp"
 #include "methods.hpp"
+#include "Apportionment.hpp"
 #include <string>
 #include <cmath>
 
-Adams::Adams() : Adams("", 0) {}
-
-Adams::Adams(std::string stateName, unsigned long long statePopulation) :
-  State(stateName, statePopulation){
-  this->setPriority;
-}
-
-Adams::~Adams() {}
-
-Adams::setPriority() {
+AdamsMethod::AdamsMethod() {}
+AdamsMethod::~AdamsMethod() {}
+double AdamsMethod::priority(const State &state) {
   double p;
-  unsigned long long a = seats;
-  unsigned long long b = seats + 1;
+  unsigned a = state.getSeats();
+  unsigned b = a + 1;
 
-  p = population/static_cast<double>fmin(a, b);
-  this->priority = p;
+  //will always divide by 'a', fmin() used for consistency
+  p = state.getPopulation() / static_cast<double>(fmin(a, b));
+  return p;
 }
 
-Dean::Dean() : Dean("", 0) {}
-
-Dean::Dean(std::string stateName, unsigned long long statePopulation) :
-  State(stateName, statePopulation){
-  this->setPriority;
-}
-
-Dean::~Dean() {}
-
-Dean::setPriority() {
+DeanMethod::DeanMethod() {}
+DeanMethod::~DeanMethod() {}
+double DeanMethod::priority(const State &state) {
   double p;
-  unsigned long long a = seats;
-  unsigned long long b = seats + 1;
+  unsigned a = state.getSeats();
+  unsigned b = a + 1;
   double AM, GM, HM;
 
-  AM = (a + b) / 2;
-  GM = sqrt(a * b);
-  HM = (GM * GM) / AM;
+  AM = (a + b) / 2.0; // arithmeticMean
+  GM = sqrt(a * b); // geometricMean
+  HM = (GM * GM) / AM; //harmonicMean
 
-  p = population/HM;
-  this->priority = p;
+  p = state.getPopulation() / HM;
+  return p;
 }
 
-HuntingtonHill::HuntingtonHill() : HuntingtonHill("", 0) {}
-
-HuntingtonHill::HuntingtonHill(std::string stateName,
-    unsigned long long statePopulation) :
-  State(stateName, statePopulation){
-  this->setPriority;
-}
-
-HuntingtonHill::~HuntingtonHill() {}
-
-HuntingtonHill::setPriority() {
+HuntingtonHillMethod::HuntingtonHillMethod() {}
+HuntingtonHillMethod::~HuntingtonHillMethod() {}
+double HuntingtonHillMethod::priority(const State &state) {
   double p;
-  unsigned long long a = seats;
-  unsigned long long b = seats + 1;
+  unsigned a = state.getSeats();
+  unsigned b = a + 1;
   double GM;
 
-  GM = sqrt(a * b);
+  GM = sqrt(a * b); //geometricMean
 
-  p = population/GM;
-  this->priority = p;
+  p = state.getPopulation() / GM;
+  return p;
 }
 
-Webster::Webster() : Webster("", 0) {}
-
-Webster::Webster(std::string stateName, unsigned long long statePopulation) :
-  State(stateName, statePopulation){
-  this->setPriority;
-}
-
-Webster::~Webster() {}
-
-Webster::setPriority() {
+WebsterMethod::WebsterMethod() {}
+WebsterMethod::~WebsterMethod() {}
+double WebsterMethod::priority(const State &state) {
   double p;
-  unsigned long long a = seats;
-  unsigned long long b = seats + 1;
+  unsigned a = state.getSeats();
+  unsigned b = a + 1;
   double AM;
 
-  AM = (a + b) / 2;
+  AM = (a + b) / 2.0; //arithmeticMean
 
-  p = population/AM;
-  this->priority = p;
+  p = state.getPopulation() / AM;
+  return p;
 }
 
-Jefferson::Jefferson() : Jefferson("", 0) {}
-
-Jefferson::Jefferson(std::string stateName, unsigned long long statePopulation) :
-  State(stateName, statePopulation){
-  this->setPriority;
-}
-
-Jefferson::~Jefferson() {}
-
-Jefferson::setPriority() {
+JeffersonMethod::JeffersonMethod() {}
+JeffersonMethod::~JeffersonMethod() {}
+double JeffersonMethod::priority(const State &state) {
   double p;
-  unsigned long long a = seats;
-  unsigned long long b = seats + 1;
+  unsigned a = state.getSeats();
+  unsigned b = a + 1;
 
-  p = population/static_cast<double>fmax(a, b);
-  this->priority = p;
+  //will always divide by 'b', fmin() used for consistency
+  p = state.getPopulation() / static_cast<double>(fmax(a, b));
+  return p;
 }

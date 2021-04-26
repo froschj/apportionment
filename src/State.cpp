@@ -6,61 +6,72 @@
 
 #include <string>
 
+//construct a blank State
 State::State() : State("", 0) {}
 
-State::State(std::string stateName, unsigned long long statePopulation) {
+//construct a state with a  name and a population.
+//all States start with 1 seat apportioned
+State::State(const std::string stateName, const unsigned long statePopulation) {
   this->setName(stateName);
   this->setPopulation(statePopulation);
   this->seats = 1;
 }
 
+//copy constructor for a State
+State::State (const State &rhs) {
+  this->name = rhs.name;
+  this->population = rhs.population;
+  this->seats = rhs.seats;
+}
+
+//assignment operator
+State& State::operator= (const State &rhs) {
+  this->name = rhs.name;
+  this->population = rhs.population;
+  this->seats = rhs.seats;
+  return *this;
+}
+
+//no destructor required
 State::~State() {}
 
-void State::setName(stateName) {
+//set the name of the state
+void State::setName(const std::string stateName) {
   this->name = stateName;
 }
 
-void State::setPopulation(statePopulation) {
+//set the population of a State
+void State::setPopulation(const unsigned long statePopulation) {
   this->population = statePopulation;
 }
 
+//increment the number of seats apportioned to a State
 void State::addSeat() {
   ++(this->seats);
-  this->setPriority();
 }
 
-std::string getName() {
+//return the name of the state
+std::string State::getName() const {
   return this->name;
 }
 
-unsigned long long State::getPopulation() {
+//return a states population
+unsigned long State::getPopulation() const {
   return this->population;
 }
 
-double State::getPriority() {
-  return this->getPriority;
-}
-
-unsigned State::getSeats() {
+//return a states current number of seats
+unsigned State::getSeats() const {
   return this->seats;
 }
 
-StatePriority::StatePriority(const bool& revparam=false) {
+//compare functor for putting a container of States in Alpha order by name
+StateAlpha::StateAlpha(const bool& revparam) {
   reverse=revparam;
 }
 
-bool StatePriority::operator() (const State *lhs, const State *rhs) const
+bool StateAlpha::operator() (const State &lhs, const State &rhs) const
 {
-  if (reverse) return (lhs->getPriority() > rhs->getPriority());
-  else return (lhs->getPriority() < rhs->getPriority());
-}
-
-StateAlpha::StateAlpha(const bool& revparam=false) {
-  reverse=revparam;
-}
-
-bool StateAlpha::operator() (const State *lhs, const State *rhs) const
-{
-  if (reverse) return (lhs->getPriority() > rhs->getPriority());
-  else return (lhs->getPriority() < rhs->getPriority());
+  if (reverse) return (lhs.getName().compare(rhs.getName()) < 0);
+  else return (rhs.getName().compare(lhs.getName()) < 0);
 }

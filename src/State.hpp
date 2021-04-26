@@ -7,34 +7,48 @@
 
 #include <string>
 
+//class to store data by state
 class State {
 public:
+  //construct a blank State with 1 apportioned seat
   State();
-  State(std::string stateName, unsigned long long statePopulation);
+  //construct a state with a  name and a population.
+  //all States start with 1 seat apportioned
+  State(const std::string stateName, const unsigned long statePopulation);
+  //copy constructor for a State
+  State(const State &rhs);
+  //assignment operator
+  State& operator= (const State &rhs);
 
-  void setName(std::string stateName);
-  void setPopulation(unsigned long long statePopulation);
+  void setName(const std::string stateName);
+  //set the population of a State
+  void setPopulation(const unsigned long statePopulation);
+  //increment the number of seats apportioned to a State
   void addSeat();
 
-  std::string getName();
-  unsigned long long getPopulation();
-  double getPriority();
-  unsigned getSeats();
+  //return the name of the state
+  std::string getName() const;
+  //return a states population
+  unsigned long getPopulation() const;
+  //return a states current number of seats
+  unsigned getSeats() const;
 
-  virtual ~State();
+  ~State();
 protected:
   std::string name;
-  unsigned long long population;
+  unsigned long population;
   unsigned seats;
-  double priority;
-  virtual void setPriority() = 0;
+
 };
 
-class StatePriority {
+//functor for ordering states by name
+class StateAlpha {
   bool reverse;
 public:
-  StatePriority(const bool& revparam=false);
-  bool operator() (const State *lhs, const State *rhs) const;
+  StateAlpha(const bool& revparam=false);
+  bool operator() (
+    const State &lhs, const State &rhs
+  ) const;
 };
 
 #endif

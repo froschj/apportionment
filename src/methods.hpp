@@ -1,52 +1,70 @@
+/*
+ * Concrete versions of the abstract Apportionment class representing
+ * different priority functions used to decide which state gets the next
+ * seat
+ */
+
+//note 1850-1900: Hamilton method - not convertible to priority. Certain sizes
+// agree with Webster (1852, 1870-1890)
+//note 1920: no apportionment
+
 #ifndef METHODS_HPP
 #define METHODS_HPP
 
 #include "State.hpp"
+#include "Apportionment.hpp"
 #include <string>
 
-class Adams : public State {
+//Adams method: priority = population / curSeats
+//considered 1830, not used
+class AdamsMethod : public Apportionment {
 public:
-  Adams();
-  Adams(std::string stateName, unsigned long long statePopulation);
-  ~Adams();
+  AdamsMethod();
+  ~AdamsMethod();
 protected:
-  double setPriority() override;
+  virtual double priority(const State &state) override;
 };
 
-class Dean : public State {
+//Dean method: priority = population / harmonicMean(curSeats, curSeats + 1)
+//considered 1830, not used
+class DeanMethod : public Apportionment {
 public:
-  Dean();
-  Dean(std::string stateName, unsigned long long statePopulation);
-  ~Dean();
+  DeanMethod();
+  ~DeanMethod();
 protected:
-  double setPriority() override;
+  virtual double priority(const State &state) override;
 };
 
-class HuntingtonHill : public State {
+//Huntington-Hill method:
+// priority = population / geometricMean(curSeats, curSeats + 1)
+//used 1940 - 2010
+class HuntingtonHillMethod : public Apportionment {
 public:
-  HuntingtonHill();
-  HuntingtonHill(std::string stateName, unsigned long long statePopulation);
-  ~HuntingtonHill();
+  HuntingtonHillMethod();
+  ~HuntingtonHillMethod();
 protected:
-  double setPriority() override;
+  virtual double priority(const State &state) override;
 };
 
-class Webster : public State {
+//Webster method:
+//priority = population / arithmeticMean(curSeats, curSeats + 1)
+//used 1840, 1910, 1930
+class WebsterMethod : public Apportionment {
 public:
-  Webster();
-  Webster(std::string stateName, unsigned long long statePopulation);
-  ~Webster();
+  WebsterMethod();
+  ~WebsterMethod();
 protected:
-  double setPriority() override;
+  virtual double priority(const State &state) override;
 };
 
-class Jefferson : public State {
+//Jefferson method: priority = population / (curSeats + 1)
+//used 1790-1830
+class JeffersonMethod : public Apportionment {
 public:
-  Jefferson();
-  Jefferson(std::string stateName, unsigned long long statePopulation);
-  ~Jefferson();
+  JeffersonMethod();
+  ~JeffersonMethod();
 protected:
-  double setPriority() override;
+  virtual double priority(const State &state) override;
 };
 
 #endif
