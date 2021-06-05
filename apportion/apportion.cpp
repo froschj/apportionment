@@ -2,16 +2,16 @@
  * text interface to apportion seats specified in a csv. 
  */
 
-#include "../src/State.hpp"
-#include "../src/methods.hpp"
-#include "../src/Apportionment.hpp"
-#include "../src/ApportionmentFactory.hpp"
+#include "State.hpp"
+#include "methods.hpp"
+#include "Apportionment.hpp"
+#include "ApportionmentFactory.hpp"
 
 #ifdef WINDOWS
 #define TCLAP_NAMESTARTSTRING "~~"
 #define TCLAP_FLAGSTARTSTRING "/"
 #endif
-#include "../src/tclap/CmdLine.h"
+#include "CmdLine.h"
 
 #include <iostream>
 #include <string>
@@ -43,7 +43,6 @@ struct Parameters {
 };
 
 State parseLine(const std::string &record);
-void usageNote(const char *progName);
 void readStates(
     std::unique_ptr<Apportionment> const &dest, std::istream &input
 );
@@ -53,7 +52,9 @@ void writePriorityList(
     std::unique_ptr<Apportionment> const &src
 );
 
-std::unique_ptr<struct Parameters> parseArguments();
+std::unique_ptr<struct Parameters> parseArguments(
+    int argc, const char *const *argv
+);
 
 int main(int argc, const char** argv) {
     // get the parameters
@@ -65,33 +66,37 @@ int main(int argc, const char** argv) {
     // create an apportinment object
     std::unique_ptr<Apportionment> a = 
         ApportionmentFactory::createApportionment(
-            parameters->useMethod;
+            parameters->useMethod
         );
 
     //fill the Apportionment object
-    try {
-        // select correct input
-        if (parameters->isFileInput) {
+    if (parameters->isFileInput) { //read from file
+        std::ifstream inputFile;
+        inputFile.exceptions (std::ifstream::failbit);
+        try {
             // open file 
-            std::ifstream inputFile;
-            inputFile.exceptions (ifstream::badbit);
             inputFile.open(parameters->inputFileName);
+        }
+        catch (const std::ifstream::failure& e) {
+            std::cerr << "could not open file " << '"' << parameters->inputFileName << '"' << std::endl;
+            return 1;
+        }
+        try {
             readStates(a, inputFile);
-        } else {
+        }
+        catch (const char* e) {
+            std::cerr << e << std::endl;
+            return 1;
+        }
+    } else {
+        // read states from cin
+        try {
             readStates(a, std::cin);
         }
-    }
-    catch (const ifstream::failure& e) {
-        std::cerr << e.what() <<std::endl;
-        return 1;
-    }
-    catch (std::exception& e) {
-        std::cerr << e.what() << std::endl;
-        return 1;
-    }
-    catch (const char *e) {
-        std::cerr << e << std::endl;
-        return 1;
+        catch (const char* e) {
+            std::cerr << e << std::endl;
+            return 1;
+        }
     }
     
     //check that we have a valid setup
@@ -102,29 +107,47 @@ int main(int argc, const char** argv) {
     }
 
     //open a file to store the priority list
-    std::string fileName = argv[1];
-    fileName += "_priorities.csv"; 
-    std::ofstream priorityList;
-    priorityList.open(fileName);
-    if (priorityList.fail()) {
-        std::cerr << "could not open output file" << std::endl;
-        return 1;
+    if (parameters->isPriorityOutput) {
+        std::ofstream priorityList;
+        priorityList.exceptions (std::ofstream::failbit);
+        try { 
+            priorityList.open(parameters->priorityFileName);
+        }
+        catch (const std::ofstream::failure& e) {
+            std::cerr << "could not open file " << '"' << parameters->priorityFileName << '"' << std::endl;
+            return 1;
+        }
+        //write priority list to a file
+        writePriorityList(priorityList, parameters->seats, a);
+        priorityList.close();
     }
-    //write priority list to a file
-    writePriorityList(priorityList, seats, a);
-    priorityList.close();
 
-    //write apportioned seats to stdout
+    //write apportioned seats results
     std::vector<State> apportioned = a->getStates();
     std::sort(apportioned.begin(), apportioned.end(), StateAlpha(true));
-    for (auto it = apportioned.cbegin(); it != apportioned.cend(); ++it) {
-        std::cout << it->getName() << ',' << it->getSeats() <<std::endl;
+    if (parameters->isFileOutput) { //write to file
+        std::ofstream outputFile;
+        outputFile.exceptions (std::ofstream::failbit);
+        try {
+            outputFile.open(parameters->outputFileName);
+        }
+        catch (const std::ofstream::failure& e) {
+            std::cerr << "could not open file " << '"' << parameters->outputFileName << '"' << std::endl;
+            return 1;
+        }
+        for (auto it = apportioned.cbegin(); it != apportioned.cend(); ++it) {
+            outputFile << it->getName() << ',' << it->getSeats() <<std::endl;
+        }
+    } else { // write to cout
+        for (auto it = apportioned.cbegin(); it != apportioned.cend(); ++it) {
+            std::cout << it->getName() << ',' << it->getSeats() <<std::endl;
+        }
     }
-
+    
     return 0;
 }
 
-
+// process a state record (<StateName>,<population>)
 State parseLine(const std::string &record) {
     std::size_t fieldSep = record.find_first_of(',');
     if (fieldSep == std::string::npos) {
@@ -138,23 +161,22 @@ State parseLine(const std::string &record) {
     return State(name, pop);
 }
 
-void usageNote(const char *progName) {
-    std::cerr << "USAGE: " << progName << " $seats" << std::endl 
-        << "$seats must be a positive integer less than "
-        << std::numeric_limits<unsigned>::max() << std::endl
-        << "CSV StateName,StatePop\\n accepted on stdin" << std::endl
-        << "CSV input terminated with EOF" << std::endl;
-}
-
+// read a series of states in from a csv
 void readStates(
     std::unique_ptr<Apportionment> const &dest, std::istream &input
 ) {
     std::string record;
-    while(std::getline(input,record)) {
-        dest->addState(parseLine(record));
+    try {
+        while(std::getline(input,record)) {
+            dest->addState(parseLine(record));
+        }
+    }
+    catch (std::ifstream::failure& e) {
+
     }
 }
 
+// output the priority list to a file
 void writePriorityList(
     std::ostream &dest, 
     unsigned numSeats, 
@@ -169,9 +191,13 @@ void writePriorityList(
     }
 }
 
-std::unique_ptr<struct Parameters> parseArguments(int argv, const char **argc) {
+// TCLAP-based parser for command line arguments
+std::unique_ptr<struct Parameters> parseArguments(
+    int argc, const char *const *argv
+) {
+    // create a struct Parameters to hold the results
     std::unique_ptr<struct Parameters> params = 
-    std::make_unique<struct Parameters>;
+    std::make_unique<struct Parameters>();
     try {
         // get the parser
         TCLAP::CmdLine cmd("Apportionment Calculator", ' ', VERSION);
@@ -203,7 +229,7 @@ std::unique_ptr<struct Parameters> parseArguments(int argv, const char **argc) {
             "Apportionment Method",
             false,
             DEFAULT_METHOD_STRING,
-            allowedVals
+            &allowedVals
         );
 
         // define switch to specify input file
@@ -244,7 +270,7 @@ std::unique_ptr<struct Parameters> parseArguments(int argv, const char **argc) {
         cmd.add(priorityArg);
 
         // parse
-        cmd.parse(argc,argv);
+        cmd.parse(argc, argv);
 
         // build the return struct
         params->seats = seatsArg.getValue();
@@ -269,5 +295,5 @@ std::unique_ptr<struct Parameters> parseArguments(int argv, const char **argc) {
         return nullptr;
     }
 
-    return params
+    return params;
 }
