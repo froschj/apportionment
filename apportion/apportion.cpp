@@ -106,8 +106,8 @@ int main(int argc, const char** argv) {
         return 1;
     }
 
-    //open a file to store the priority list
-    if (parameters->isPriorityOutput) {
+    // generate the priority list
+    if (parameters->isPriorityOutput) { //write to a file
         std::ofstream priorityList;
         priorityList.exceptions (std::ofstream::failbit);
         try { 
@@ -120,6 +120,8 @@ int main(int argc, const char** argv) {
         //write priority list to a file
         writePriorityList(priorityList, parameters->seats, a);
         priorityList.close();
+    } else {
+        a->apportion(parameters->seats - a->getSeatsApportioned());
     }
 
     //write apportioned seats results
@@ -183,11 +185,11 @@ void writePriorityList(
     std::unique_ptr<Apportionment> const &src
 ) {
     for (int i = src->getSeatsApportioned() + 1; i <= numSeats; ++i) {
-    dest << i << ',';
-    dest << src->topStatePriority() << ',';
-    dest << src->topStateName() << ',';
-    dest << src->topStateSeats() + 1 << std::endl;
-    src->addSeat();
+        dest << i << ',';
+        dest << src->topStatePriority() << ',';
+        dest << src->topStateName() << ',';
+        dest << src->topStateSeats() + 1 << std::endl;
+        src->addSeat();
     }
 }
 
