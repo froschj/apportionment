@@ -4,9 +4,9 @@
  * seat
  */
 
-//note 1850-1900: Hamilton method - not convertible to priority. Certain sizes
+// note 1850-1900: Hamilton method - not convertible to priority. Certain sizes
 // agree with Webster (1852, 1870-1890)
-//note 1920: no apportionment
+// note 1920: no apportionment
 
 #ifndef METHODS_HPP
 #define METHODS_HPP
@@ -15,8 +15,10 @@
 #include "Apportionment.hpp"
 #include <string>
 
-//Adams method: priority = population / curSeats
-//considered 1830, not used
+/* Adams method: priority = population / curSeats
+ * 
+ * considered 1830, not used
+ */
 class AdamsMethod : public Apportionment {
 public:
   AdamsMethod();
@@ -25,8 +27,10 @@ protected:
   virtual double priority(const State &state) override;
 };
 
-//Dean method: priority = population / harmonicMean(curSeats, curSeats + 1)
-//considered 1830, not used
+/* Dean method: priority = population / harmonicMean(curSeats, curSeats + 1)
+ * 
+ * considered 1830, not used
+ */
 class DeanMethod : public Apportionment {
 public:
   DeanMethod();
@@ -35,9 +39,11 @@ protected:
   virtual double priority(const State &state) override;
 };
 
-//Huntington-Hill method:
-// priority = population / geometricMean(curSeats, curSeats + 1)
-//used 1940 - 2010
+/* Huntington-Hill method:
+ *
+ * priority = population / geometricMean(curSeats, curSeats + 1)
+ * used 1940 - 2010
+ */
 class HuntingtonHillMethod : public Apportionment {
 public:
   HuntingtonHillMethod();
@@ -46,9 +52,11 @@ protected:
   virtual double priority(const State &state) override;
 };
 
-//Webster method:
-//priority = population / arithmeticMean(curSeats, curSeats + 1)
-//used 1840, 1910, 1930
+/* Webster method:
+ *
+ * priority = population / arithmeticMean(curSeats, curSeats + 1)
+ * used 1840, 1910, 1930
+ */
 class WebsterMethod : public Apportionment {
 public:
   WebsterMethod();
@@ -57,8 +65,10 @@ protected:
   virtual double priority(const State &state) override;
 };
 
-//Jefferson method: priority = population / (curSeats + 1)
-//used 1790-1830
+/* Jefferson method: priority = population / (curSeats + 1)
+ *
+ * used 1790-1830
+ */
 class JeffersonMethod : public Apportionment {
 public:
   JeffersonMethod();
