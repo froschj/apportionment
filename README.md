@@ -4,6 +4,8 @@ Program to apportion a number of congressional seats among states according to p
 
 For more information about the methods, see the support materials.
 
+required input format is `<stateName>,<population>` on each line of input. Input terminates on EOF.
+
 `make apportioner` requires g++
 
 # usage note from command line
