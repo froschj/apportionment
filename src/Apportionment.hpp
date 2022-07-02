@@ -12,11 +12,14 @@
 #include <memory>
 #include <string>
 #include <tuple>
+#include <functional>
 
 class Apportionment {
 public:
   //create a new apportionment object
-  Apportionment();
+  //Apportionment();
+  //create an apportionment object with a selected method
+  Apportionment(std::function<double(const State&)>);
   //apportion <seats> seats amon the states stored in the apportionment
   void apportion(unsigned seats);
   //apportion a seat to the highest priority state
@@ -36,14 +39,16 @@ public:
   double topStatePriority() const;
   //return the number of states in the apportionment
   unsigned getNumStates() const;
-  //needed for polymorphism
-  virtual ~Apportionment();
+  //set the apportionment method to use
+  //void setMethod(std::function<double(const State&)> newMethod);
+  //destructor
+  ~Apportionment();
 private:
   //store each state with a corresponding priority value
   std::vector<std::tuple<State, double>> states;
   unsigned seatsApportioned;
-  //override in derived classes to implement different apportiomment methods
-  virtual double priority(const State &state) = 0;
+  //store the function we will use to determine priority
+  std::function<double(const State&)> priority;
 };
 
 //comparison functor to implement priority queue behavior in our tuple vector

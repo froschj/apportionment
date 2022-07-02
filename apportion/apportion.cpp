@@ -5,7 +5,6 @@
 #include "State.hpp"
 #include "methods.hpp"
 #include "Apportionment.hpp"
-#include "ApportionmentFactory.hpp"
 
 #ifdef WINDOWS
 #define TCLAP_NAMESTARTSTRING "~~"
@@ -28,12 +27,20 @@
 
 #define VERSION "0.1"
 #define DEFAULT_SEATS 435
-#define DEFAULT_METHOD ApportionmentFactory::HuntingtonHill
+#define DEFAULT_METHOD Method::HuntingtonHill
 #define DEFAULT_METHOD_STRING "huntingtonhill"
+
+enum class Method {
+		Adams,
+		Dean,
+		HuntingtonHill,
+        Webster,
+        Jefferson
+	};
 
 struct Parameters {
     unsigned seats = DEFAULT_SEATS;
-    ApportionmentFactory::AppMethod useMethod = DEFAULT_METHOD;
+    Method useMethod = DEFAULT_METHOD;
     bool isFileInput = false;
     std::string inputFileName = "";
     bool isFileOutput = false;
@@ -56,6 +63,8 @@ std::unique_ptr<struct Parameters> parseArguments(
     int argc, const char *const *argv
 );
 
+std::unique_ptr<Apportionment> makeApportioner(Method method);
+
 int main(int argc, const char** argv) {
     // get the parameters
     std::unique_ptr<struct Parameters> parameters = parseArguments(argc, argv);
@@ -64,10 +73,8 @@ int main(int argc, const char** argv) {
     }
 
     // create an apportinment object
-    std::unique_ptr<Apportionment> a = 
-        ApportionmentFactory::createApportionment(
-            parameters->useMethod
-        );
+    std::unique_ptr<Apportionment> a = makeApportioner(parameters->useMethod); 
+    if (!a) return 1;
 
     //fill the Apportionment object
     if (parameters->isFileInput) { //read from file
@@ -215,12 +222,12 @@ std::unique_ptr<struct Parameters> parseArguments(
 
         // define switch to change method
         std::vector<std::string> allowed;
-        std::map<std::string,ApportionmentFactory::AppMethod> methodMap;
-        methodMap["adams"] = ApportionmentFactory::Adams;
-        methodMap["dean"] = ApportionmentFactory::Dean;
-        methodMap[DEFAULT_METHOD_STRING] = ApportionmentFactory::HuntingtonHill;
-        methodMap["webster"] = ApportionmentFactory::Webster;
-        methodMap["jefferson"] = ApportionmentFactory::Jefferson;
+        std::map<std::string,Method> methodMap;
+        methodMap["adams"] = Method::Adams;
+        methodMap["dean"] = Method::Dean;
+        methodMap[DEFAULT_METHOD_STRING] = Method::HuntingtonHill;
+        methodMap["webster"] = Method::Webster;
+        methodMap["jefferson"] = Method::Jefferson;
         for (auto it = methodMap.begin(); it != methodMap.end(); ++it) {
             allowed.push_back(it->first);
         }
@@ -298,4 +305,21 @@ std::unique_ptr<struct Parameters> parseArguments(
     }
 
     return params;
+}
+
+std::unique_ptr<Apportionment> makeApportioner(Method method) {
+    switch (method) {
+		case Method::Adams:             
+            return std::make_unique<Apportionment>(adams);
+		case Method::Dean:              
+            return std::make_unique<Apportionment>(dean);
+		case Method::HuntingtonHill:    
+            return std::make_unique<Apportionment>(huntingtonHill);
+        case Method::Webster:           
+            return std::make_unique<Apportionment>(webster);
+        case Method::Jefferson:         
+            return std::make_unique<Apportionment>(jefferson);
+        default:
+            return nullptr;
+	}
 }

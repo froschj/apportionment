@@ -9,9 +9,10 @@
 #include <tuple>
 
 //create a new apportionment object
-Apportionment::Apportionment() {
+Apportionment::Apportionment(std::function<double(const State&)> method) {
   (this->states).clear();
   this->seatsApportioned = 0;
+  this->priority = method;
 }
 
 //apportion <seats> seats amon the states stored in the apportionment

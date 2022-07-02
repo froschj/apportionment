@@ -4,9 +4,12 @@
 #include <string>
 #include <cmath>
 
-AdamsMethod::AdamsMethod() {}
-AdamsMethod::~AdamsMethod() {}
-double AdamsMethod::priority(const State &state) {
+/* Adams method: priority = population / curSeats
+ * (floor)
+ * considered 1830, not used
+ * (most favorable to small states)
+ */
+double adams(const State &state) {
   double p;
   unsigned a = state.getSeats();
   unsigned b = a + 1;
@@ -16,9 +19,11 @@ double AdamsMethod::priority(const State &state) {
   return p;
 }
 
-DeanMethod::DeanMethod() {}
-DeanMethod::~DeanMethod() {}
-double DeanMethod::priority(const State &state) {
+/* Dean method: priority = population / harmonicMean(curSeats, curSeats + 1)
+ * 
+ * considered 1830, not used
+ */
+double dean(const State &state) {
   double p;
   unsigned a = state.getSeats();
   unsigned b = a + 1;
@@ -32,9 +37,12 @@ double DeanMethod::priority(const State &state) {
   return p;
 }
 
-HuntingtonHillMethod::HuntingtonHillMethod() {}
-HuntingtonHillMethod::~HuntingtonHillMethod() {}
-double HuntingtonHillMethod::priority(const State &state) {
+/* Huntington-Hill method:
+ *
+ * priority = population / geometricMean(curSeats, curSeats + 1)
+ * used 1940 on
+ */
+double huntingtonHill(const State &state) {
   double p;
   unsigned a = state.getSeats();
   unsigned b = a + 1;
@@ -46,9 +54,12 @@ double HuntingtonHillMethod::priority(const State &state) {
   return p;
 }
 
-WebsterMethod::WebsterMethod() {}
-WebsterMethod::~WebsterMethod() {}
-double WebsterMethod::priority(const State &state) {
+/* Webster method:
+ *
+ * priority = population / arithmeticMean(curSeats, curSeats + 1)
+ * used 1840, 1910, 1930
+ */
+double webster(const State &state) {
   double p;
   unsigned a = state.getSeats();
   unsigned b = a + 1;
@@ -60,9 +71,12 @@ double WebsterMethod::priority(const State &state) {
   return p;
 }
 
-JeffersonMethod::JeffersonMethod() {}
-JeffersonMethod::~JeffersonMethod() {}
-double JeffersonMethod::priority(const State &state) {
+/* Jefferson method: priority = population / (curSeats + 1)
+ * (ceiling)
+ * used 1790-1830
+ * (most favorable to large states)
+ */
+double jefferson(const State &state) {
   double p;
   unsigned a = state.getSeats();
   unsigned b = a + 1;

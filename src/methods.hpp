@@ -1,7 +1,5 @@
 /*
- * Concrete versions of the abstract Apportionment class representing
- * different priority functions used to decide which state gets the next
- * seat
+ * Priority functions to determine which state gets the "next" seat
  */
 
 // note 1850-1900: Hamilton method - not convertible to priority. Certain sizes
@@ -16,65 +14,37 @@
 #include <string>
 
 /* Adams method: priority = population / curSeats
- * 
+ * (floor)
  * considered 1830, not used
+ * (most favorable to small states)
  */
-class AdamsMethod : public Apportionment {
-public:
-  AdamsMethod();
-  ~AdamsMethod();
-protected:
-  virtual double priority(const State &state) override;
-};
+double adams(const State &state);
 
 /* Dean method: priority = population / harmonicMean(curSeats, curSeats + 1)
  * 
  * considered 1830, not used
  */
-class DeanMethod : public Apportionment {
-public:
-  DeanMethod();
-  ~DeanMethod();
-protected:
-  virtual double priority(const State &state) override;
-};
+double dean(const State &state);
 
 /* Huntington-Hill method:
  *
  * priority = population / geometricMean(curSeats, curSeats + 1)
- * used 1940 - 2010
+ * used 1940 on
  */
-class HuntingtonHillMethod : public Apportionment {
-public:
-  HuntingtonHillMethod();
-  ~HuntingtonHillMethod();
-protected:
-  virtual double priority(const State &state) override;
-};
+double huntingtonHill(const State &state);
 
 /* Webster method:
  *
  * priority = population / arithmeticMean(curSeats, curSeats + 1)
  * used 1840, 1910, 1930
  */
-class WebsterMethod : public Apportionment {
-public:
-  WebsterMethod();
-  ~WebsterMethod();
-protected:
-  virtual double priority(const State &state) override;
-};
+double webster(const State &state);
 
 /* Jefferson method: priority = population / (curSeats + 1)
- *
+ * (ceiling)
  * used 1790-1830
+ * (most favorable to large states)
  */
-class JeffersonMethod : public Apportionment {
-public:
-  JeffersonMethod();
-  ~JeffersonMethod();
-protected:
-  virtual double priority(const State &state) override;
-};
+double jefferson(const State &state);
 
 #endif
